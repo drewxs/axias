@@ -1,3 +1,3 @@
 # Axias
 
-A platform for API developmen
+A platform for API development
