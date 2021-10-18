@@ -1,0 +1,37 @@
+@use '../abstract/functions' as *;
+
+.MuiOutlinedInput-root,
+.MuiInputBase-root {
+	color: clr(neutral, 300) !important;
+	border-color: red !important;
+}
+.MuiButton-root {
+	width: 10em;
+	min-height: 4em;
+
+	&.delete {
+		color: clr(error, 500) !important;
+		border-color: clr(error, 500) !important;
+	}
+	&.add {
+		color: clr(add, 500) !important;
+		border-color: clr(add, 500) !important;
+	}
+}
+.MuiButton-contained {
+	background-color: clr(primary, 900) !important;
+}
+.MuiTabs-indicator {
+	background-color: clr(primary, 500) !important;
+}
+.MuiTab-root.Mui-selected {
+	color: clr(primary, 500) !important;
+}
+.MuiPaper-root {
+	background-color: clr(neutral, 800) !important;
+	color: clr(neutral, 300) !important;
+}
+.MuiTab-root {
+	background-color: clr(neutral, 900) !important;
+	color: clr(neutral, 300) !important;
+}

@@ -1,0 +1,14 @@
+.req-form {
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+	margin-bottom: 1em;
+}
+
+.MuiTextField-root {
+	flex-grow: 1;
+}
+
+#method-select {
+	width: 6em;
+}

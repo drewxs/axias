@@ -1,0 +1,64 @@
+body {
+	font-family: 'Montserrat', sans-serif;
+	letter-spacing: -0.5px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	--font-weight: 700;
+	--font-width: 80;
+	font-weight: normal;
+	font-stretch: 100%;
+	line-height: 1.1;
+}
+
+h1,
+.h1 {
+	--font-weight: 900;
+	font-size: --fs-800;
+}
+
+h2,
+.h2 {
+	font-size: --fs-700;
+}
+
+h3,
+.h3 {
+	font-size: --fs-600;
+}
+
+h4,
+.h4 {
+	font-size: --fs-500;
+}
+
+h5,
+.h5 {
+	font-size: --fs-400;
+}
+
+h6,
+.h6 {
+	font-size: --fs-300;
+}
+
+a {
+	color: clr(primary, 400);
+
+	&:hover,
+	&:focus {
+		color: clr(primary, 500);
+		text-decoration: none;
+	}
+}
+
+p:not([class]),
+ul:not([class]),
+li:not([class]) {
+	max-width: 60ch;
+}
