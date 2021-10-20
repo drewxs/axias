@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { KeyValue } from './components/KeyValue';
 import {
-	Box,
 	FormControl,
 	MenuItem,
+	InputLabel,
 	Select,
 	TextField,
 	Button,
@@ -12,13 +13,16 @@ import {
 	Typography,
 } from '@mui/material';
 
-function App() {
+export const App = () => {
 	const [method, setMethod] = useState('GET');
 	const [tab, setTab] = useState(0);
-
-	const handleSelectMethod = (e) => {
-		setMethod(e.target.value);
-	};
+	const [keyValues, setKeyValues] = useState([
+		{
+			key: '',
+			value: '',
+			idx: 0,
+		},
+	]);
 
 	const handleReqSubmit = (e) => {
 		e.preventDefault();
@@ -29,7 +33,15 @@ function App() {
 		setTab(newTab);
 	};
 
-	function TabPanel(props) {
+	const removeKeyValue = (idx) => {
+		setKeyValues(keyValues.filter((item) => item.idx !== idx));
+	};
+
+	useEffect(() => {
+		console.log(keyValues);
+	}, [keyValues]);
+
+	const TabPanel = (props) => {
 		const { children, value, index, ...other } = props;
 
 		return (
@@ -41,13 +53,13 @@ function App() {
 				{...other}
 			>
 				{value === index && (
-					<Box sx={{ p: 3 }}>
+					<div className="tab">
 						<Typography>{children}</Typography>
-					</Box>
+					</div>
 				)}
 			</div>
 		);
-	}
+	};
 
 	TabPanel.propTypes = {
 		children: PropTypes.node,
@@ -66,11 +78,12 @@ function App() {
 		<div className="app">
 			<form className="req-form" onSubmit={handleReqSubmit}>
 				<FormControl>
+					<InputLabel>Method</InputLabel>
 					<Select
 						id="method-select"
 						value={method}
 						label="Method"
-						onChange={handleSelectMethod}
+						onChange={(e) => setMethod(e.target.value)}
 					>
 						<MenuItem value={'GET'}>GET</MenuItem>
 						<MenuItem value={'POST'}>POST</MenuItem>
@@ -88,7 +101,7 @@ function App() {
 					Send
 				</Button>
 			</form>
-			<Box>
+			<div className="container">
 				<Tabs
 					value={tab}
 					onChange={handleTabChange}
@@ -98,33 +111,39 @@ function App() {
 					<Tab label="Headers" {...a11yProps(1)} />
 					<Tab label="JSON" {...a11yProps(2)} />
 				</Tabs>
-				<TabPanel value={tab} index={0}>
-					<form className="req-form">
-						<TextField
-							variant="outlined"
-							placeholder="Key"
-						></TextField>
-						<TextField
-							variant="outlined"
-							placeholder="Value"
-						></TextField>
-						<Button variant="outlined" className="delete">
-							Remove
-						</Button>
-					</form>
-					<Button variant="outlined" className="add">
+				<TabPanel className="tab-panel" value={tab} index={0}>
+					{keyValues.length !== 0 &&
+						keyValues?.map((pair, idx) => (
+							<KeyValue
+								pair={pair}
+								removeKeyValue={removeKeyValue}
+								key={idx}
+							/>
+						))}
+					<Button
+						variant="outlined"
+						className="add"
+						onClick={() =>
+							setKeyValues([
+								...keyValues,
+								{
+									key: '',
+									value: '',
+									idx: keyValues.length + 1,
+								},
+							])
+						}
+					>
 						Add
 					</Button>
 				</TabPanel>
-				<TabPanel value={tab} index={1}>
+				<TabPanel className="tab-panel" value={tab} index={1}>
 					Item Two
 				</TabPanel>
-				<TabPanel value={tab} index={2}>
-					Item Three
+				<TabPanel className="tab-panel" value={tab} index={2}>
+					<div data-json-request-body className="json"></div>
 				</TabPanel>
-			</Box>
+			</div>
 		</div>
 	);
-}
-
-export default App;
+};

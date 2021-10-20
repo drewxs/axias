@@ -1,8 +1,29 @@
+@use '../abstract/functions' as *;
+
 .req-form {
 	display: flex;
 	width: 100%;
 	align-items: stretch;
 	margin-bottom: 1em;
+}
+
+.tab {
+	padding: 3px;
+}
+.tab-panel {
+	padding: 1em;
+}
+.container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	border: 1px solid clr(primary, 500);
+	border-radius: 5px;
+}
+
+.json {
+	overflow: auto;
+	max-height: 200px;
 }
 
 .MuiTextField-root {

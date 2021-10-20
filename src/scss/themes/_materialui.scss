@@ -1,9 +1,18 @@
 @use '../abstract/functions' as *;
 
 .MuiOutlinedInput-root,
+.MuiInputLabel-root,
 .MuiInputBase-root {
 	color: clr(neutral, 300) !important;
-	border-color: red !important;
+}
+.MuiInput-underline::after {
+	border-bottom-color: clr(primary, 500);
+}
+.MuiOutlinedInput-notchedOutline {
+	border-color: clr(primary, 300) !important;
+}
+.Mui-focused {
+	color: clr(primary, 300) !important;
 }
 .MuiButton-root {
 	width: 10em;
