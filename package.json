@@ -21,7 +21,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "snowpack": "snowpack dev",
     "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
     "electron": "wait-on tcp:3000 && electron ."
   },
@@ -47,7 +46,6 @@
     "concurrently": "^6.2.0",
     "electron": "^13.5.2",
     "electron-is-dev": "^2.0.0",
-    "snowpack": "^3.8.8",
     "wait-on": "^6.0.0"
   }
 }
