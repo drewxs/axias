@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { KeyValue } from './components/KeyValue';
+import axios from 'axios';
 import {
 	FormControl,
 	MenuItem,
@@ -13,66 +13,50 @@ import {
 	Typography,
 } from '@mui/material';
 
-export const App = () => {
+function App() {
 	const [method, setMethod] = useState('GET');
+	const [reqUrl, setReqUrl] = useState('');
 	const [tab, setTab] = useState(0);
 	const [keyValues, setKeyValues] = useState([
 		{
 			key: '',
 			value: '',
-			idx: 0,
 		},
 	]);
 
 	const handleReqSubmit = (e) => {
 		e.preventDefault();
-		console.log('submit');
+
+		var x = {
+			url: reqUrl,
+			method: method,
+			params: keyValues,
+			headers: keyValues,
+		};
+		console.log(x);
+		//axios(x).then((res) => console.log(res));
 	};
 
 	const handleTabChange = (e, newTab) => {
 		setTab(newTab);
 	};
 
-	const removeKeyValue = (idx) => {
-		setKeyValues(keyValues.filter((item) => item.idx !== idx));
+	const removeKeyValue = (i) => {
+		const list = [...keyValues];
+		list.splice(i, 1);
+		setKeyValues(list);
 	};
 
-	useEffect(() => {
-		console.log(keyValues);
-	}, [keyValues]);
-
-	const TabPanel = (props) => {
-		const { children, value, index, ...other } = props;
-
-		return (
-			<div
-				role="tabpanel"
-				hidden={value !== index}
-				id={`simple-tabpanel-${index}`}
-				aria-labelledby={`simple-tab-${index}`}
-				{...other}
-			>
-				{value === index && (
-					<div className="tab">
-						<Typography>{children}</Typography>
-					</div>
-				)}
-			</div>
-		);
+	const addKeyValue = () => {
+		setKeyValues([...keyValues, { key: '', value: '' }]);
 	};
 
-	TabPanel.propTypes = {
-		children: PropTypes.node,
-		index: PropTypes.number.isRequired,
-		value: PropTypes.number.isRequired,
+	const handleInputChange = (e, i) => {
+		const { name, value } = e.target;
+		const list = [...keyValues];
+		list[i][name] = value;
+		setKeyValues(list);
 	};
-
-	function a11yProps(index) {
-		return {
-			id: `simple-tab-${index}`,
-			'aria-controls': `simple-tabpanel-${index}`,
-		};
-	}
 
 	return (
 		<div className="app">
@@ -96,54 +80,68 @@ export const App = () => {
 					id="api-input"
 					variant="outlined"
 					placeholder="https://example.com"
+					value={reqUrl}
+					onChange={(e) => setReqUrl(e.target.value)}
 				></TextField>
 				<Button variant="contained" type="submit">
 					Send
 				</Button>
 			</form>
 			<div className="container">
-				<Tabs
-					value={tab}
-					onChange={handleTabChange}
-					aria-label="basic tabs example"
-				>
-					<Tab label="Query Parameters" {...a11yProps(0)} />
-					<Tab label="Headers" {...a11yProps(1)} />
-					<Tab label="JSON" {...a11yProps(2)} />
+				<Tabs value={tab} onChange={handleTabChange}>
+					<Tab label="Query Parameters" />
+					<Tab label="Headers" />
+					<Tab label="JSON" />
 				</Tabs>
-				<TabPanel className="tab-panel" value={tab} index={0}>
-					{keyValues.length !== 0 &&
-						keyValues?.map((pair, idx) => (
-							<KeyValue
-								pair={pair}
-								removeKeyValue={removeKeyValue}
-								key={idx}
-							/>
-						))}
-					<Button
-						variant="outlined"
-						className="add"
-						onClick={() =>
-							setKeyValues([
-								...keyValues,
-								{
-									key: '',
-									value: '',
-									idx: keyValues.length + 1,
-								},
-							])
-						}
-					>
-						Add
-					</Button>
-				</TabPanel>
-				<TabPanel className="tab-panel" value={tab} index={1}>
-					Item Two
-				</TabPanel>
-				<TabPanel className="tab-panel" value={tab} index={2}>
-					<div data-json-request-body className="json"></div>
-				</TabPanel>
+				{tab === 0 && (
+					<div className="tab-panel">
+						{keyValues.map((pair, i) => {
+							return (
+								<div className="req-form">
+									<TextField
+										variant="outlined"
+										placeholder="Key"
+										name="key"
+										value={pair.key}
+										onChange={(e) =>
+											handleInputChange(e, i)
+										}
+										autoComplete="off"
+									></TextField>
+									<TextField
+										variant="outlined"
+										placeholder="Value"
+										name="value"
+										value={pair.value}
+										onChange={(e) =>
+											handleInputChange(e, i)
+										}
+										autoComplete="off"
+									></TextField>
+									<Button
+										variant="outlined"
+										className="delete"
+										onClick={() => removeKeyValue(i)}
+									>
+										Remove
+									</Button>
+								</div>
+							);
+						})}
+						<Button
+							variant="outlined"
+							className="add"
+							onClick={addKeyValue}
+						>
+							Add
+						</Button>
+					</div>
+				)}
+				{tab === 1 && <div className="tab-panel">Headers</div>}
+				{tab === 2 && <div className="tab-panel">JSON</div>}
 			</div>
 		</div>
 	);
-};
+}
+
+export default App;
