@@ -1,12 +1,17 @@
 @use '../abstract/functions' as *;
 
+#method-select {
+	width: 6em;
+}
+.MuiTextField-root {
+	flex-grow: 1;
+}
 .req-form {
 	display: flex;
 	width: 100%;
 	align-items: stretch;
 	margin-bottom: 1em;
 }
-
 .tab {
 	padding: 3px;
 }
@@ -20,16 +25,20 @@
 	border: 1px solid clr(primary, 500);
 	border-radius: 5px;
 }
-
 .json {
 	overflow: auto;
 	max-height: 200px;
 }
+.response {
+	margin: 2em 0 0 1em;
 
-.MuiTextField-root {
-	flex-grow: 1;
-}
+	.stats {
+		display: flex;
+		margin-top: 1em;
 
-#method-select {
-	width: 6em;
+		.stat {
+			display: inline-block;
+			margin-right: 2em;
+		}
+	}
 }

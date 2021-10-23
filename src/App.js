@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from 'react';
 import axios from 'axios';
 import {
 	FormControl,
@@ -10,7 +9,6 @@ import {
 	Button,
 	Tabs,
 	Tab,
-	Typography,
 } from '@mui/material';
 
 function App() {
@@ -23,6 +21,15 @@ function App() {
 			value: '',
 		},
 	]);
+	const [headers, setHeaders] = useState([
+		{
+			key: '',
+			value: '',
+		},
+	]);
+	const [resStatus, setResStatus] = useState('');
+	const [resTime, setResTime] = useState('');
+	const [resSize, setResSize] = useState('');
 
 	const handleReqSubmit = (e) => {
 		e.preventDefault();
@@ -30,25 +37,14 @@ function App() {
 		var x = {
 			url: reqUrl,
 			method: method,
-			params: keyValues,
-			headers: keyValues,
+			params: kvToObjects(),
+			headers: headersToObjects(),
 		};
-		console.log(x);
-		//axios(x).then((res) => console.log(res));
+		axios(x).then((res) => null);
 	};
 
 	const handleTabChange = (e, newTab) => {
 		setTab(newTab);
-	};
-
-	const removeKeyValue = (i) => {
-		const list = [...keyValues];
-		list.splice(i, 1);
-		setKeyValues(list);
-	};
-
-	const addKeyValue = () => {
-		setKeyValues([...keyValues, { key: '', value: '' }]);
 	};
 
 	const handleInputChange = (e, i) => {
@@ -56,6 +52,43 @@ function App() {
 		const list = [...keyValues];
 		list[i][name] = value;
 		setKeyValues(list);
+	};
+	const updateHeader = (e, i) => {
+		const { name, value } = e.target;
+		const list = [...headers];
+		list[i][name] = value;
+		setHeaders(list);
+	};
+
+	const removeKeyValue = (i) => {
+		const list = [...keyValues];
+		list.splice(i, 1);
+		setKeyValues(list);
+	};
+	const removeHeader = (i) => {
+		const list = [...headers];
+		list.splice(i, 1);
+		setHeaders(list);
+	};
+
+	const addKeyValue = () => {
+		setKeyValues([...keyValues, { key: '', value: '' }]);
+	};
+	const addHeader = () => {
+		setHeaders([...headers, { key: '', value: '' }]);
+	};
+
+	const kvToObjects = () => {
+		return [...keyValues].reduce((data, pair) => {
+			if (pair.key === '') return data;
+			return { ...data, [pair.key]: pair.value };
+		}, {});
+	};
+	const headersToObjects = () => {
+		return [...headers].reduce((data, pair) => {
+			if (pair.key === '') return data;
+			return { ...data, [pair.key]: pair.value };
+		}, {});
 	};
 
 	return (
@@ -137,8 +170,55 @@ function App() {
 						</Button>
 					</div>
 				)}
-				{tab === 1 && <div className="tab-panel">Headers</div>}
+				{tab === 1 && (
+					<div className="tab-panel">
+						{headers.map((pair, i) => {
+							return (
+								<div className="req-form">
+									<TextField
+										variant="outlined"
+										placeholder="Key"
+										name="key"
+										value={pair.key}
+										onChange={(e) => updateHeader(e, i)}
+										autoComplete="off"
+									></TextField>
+									<TextField
+										variant="outlined"
+										placeholder="Value"
+										name="value"
+										value={pair.value}
+										onChange={(e) => updateHeader(e, i)}
+										autoComplete="off"
+									></TextField>
+									<Button
+										variant="outlined"
+										className="delete"
+										onClick={() => removeHeader(i)}
+									>
+										Remove
+									</Button>
+								</div>
+							);
+						})}
+						<Button
+							variant="outlined"
+							className="add"
+							onClick={addHeader}
+						>
+							Add
+						</Button>
+					</div>
+				)}
 				{tab === 2 && <div className="tab-panel">JSON</div>}
+			</div>
+			<div className="response">
+				<h3>Response</h3>
+				<div className="stats">
+					<div className="stat">Status: {resStatus}</div>
+					<div className="stat">Time: {resTime} ms</div>
+					<div className="stat">Size: {resSize}</div>
+				</div>
 			</div>
 		</div>
 	);
