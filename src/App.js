@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import prettyBytes from 'pretty-bytes';
 import {
 	FormControl,
 	MenuItem,
@@ -15,6 +16,7 @@ function App() {
 	const [method, setMethod] = useState('GET');
 	const [reqUrl, setReqUrl] = useState('');
 	const [tab, setTab] = useState(0);
+	const [resTab, setResTab] = useState(0);
 	const [keyValues, setKeyValues] = useState([
 		{
 			key: '',
@@ -27,9 +29,27 @@ function App() {
 			value: '',
 		},
 	]);
+	const [resHeaders, setResHeaders] = useState({});
 	const [resStatus, setResStatus] = useState('');
 	const [resTime, setResTime] = useState('');
 	const [resSize, setResSize] = useState('');
+	const [resExists, setResExists] = useState(false);
+
+	const updateEndTime = (response) => {
+		response.customData = response.customData || {};
+		response.customData.time =
+			new Date().getTime() - response.config.customData.startTime;
+		return response;
+	};
+	axios.interceptors.request.use((request) => {
+		request.customData = request.customData || {};
+		request.customData.startTime = new Date().getTime();
+		return request;
+	});
+
+	axios.interceptors.response.use(updateEndTime, (e) => {
+		Promise.reject(updateEndTime(e.response));
+	});
 
 	const handleReqSubmit = (e) => {
 		e.preventDefault();
@@ -40,11 +60,28 @@ function App() {
 			params: kvToObjects(),
 			headers: headersToObjects(),
 		};
-		axios(x).then((res) => null);
+		axios(x)
+			.catch((e) => e)
+			.then((res) => {
+				console.log(res);
+				setResStatus(res.status);
+				setResTime(res.customData?.time);
+				setResSize(
+					prettyBytes(
+						JSON.stringify(res.data)?.length +
+							JSON.stringify(res.headers)?.length
+					)
+				);
+				setResExists(true);
+				setResHeaders(res.headers);
+			});
 	};
 
 	const handleTabChange = (e, newTab) => {
 		setTab(newTab);
+	};
+	const handleResTabChange = (e, newTab) => {
+		setResTab(newTab);
 	};
 
 	const handleInputChange = (e, i) => {
@@ -212,14 +249,87 @@ function App() {
 				)}
 				{tab === 2 && <div className="tab-panel">JSON</div>}
 			</div>
-			<div className="response">
-				<h3>Response</h3>
-				<div className="stats">
-					<div className="stat">Status: {resStatus}</div>
-					<div className="stat">Time: {resTime} ms</div>
-					<div className="stat">Size: {resSize}</div>
-				</div>
-			</div>
+
+			{resExists && (
+				<>
+					<div className="response">
+						<h3>Response</h3>
+						<div className="stats">
+							<div className="stat">Status: {resStatus}</div>
+							<div className="stat">Time: {resTime} ms</div>
+							<div className="stat">Size: {resSize}</div>
+						</div>
+					</div>
+					<div className="container">
+						<Tabs value={resTab} onChange={handleResTabChange}>
+							<Tab label="Body" />
+							<Tab label="Headers" />
+						</Tabs>
+						{resTab === 0 && (
+							<div className="tab-panel">
+								{keyValues.map((pair, i) => {
+									return (
+										<div className="req-form">
+											<TextField
+												variant="outlined"
+												placeholder="Key"
+												name="key"
+												value={pair.key}
+												onChange={(e) =>
+													handleInputChange(e, i)
+												}
+												autoComplete="off"
+											></TextField>
+											<TextField
+												variant="outlined"
+												placeholder="Value"
+												name="value"
+												value={pair.value}
+												onChange={(e) =>
+													handleInputChange(e, i)
+												}
+												autoComplete="off"
+											></TextField>
+											<Button
+												variant="outlined"
+												className="delete"
+												onClick={() =>
+													removeKeyValue(i)
+												}
+											>
+												Remove
+											</Button>
+										</div>
+									);
+								})}
+								<Button
+									variant="outlined"
+									className="add"
+									onClick={addKeyValue}
+								>
+									Add
+								</Button>
+							</div>
+						)}
+						{resTab === 1 && (
+							<div className="tab-panel res-headers">
+								{Object.entries(resHeaders).map(
+									([key, value]) => {
+										return (
+											<div className="res-header">
+												<div className="key">{key}</div>
+												<div className="value">
+													{value}
+												</div>
+											</div>
+										);
+									}
+								)}
+							</div>
+						)}
+					</div>
+				</>
+			)}
 		</div>
 	);
 }

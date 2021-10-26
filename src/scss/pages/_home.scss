@@ -42,3 +42,12 @@
 		}
 	}
 }
+.res-headers {
+	margin: 0.5em 0 0.5em 0.5em;
+
+	.res-header {
+		display: grid;
+		grid-template-columns: 0.5fr 1fr;
+		gap: 1rem 0;
+	}
+}
