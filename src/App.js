@@ -33,6 +33,7 @@ function App() {
 			value: '',
 		},
 	]);
+	const [reqBody, setReqBody] = useState('');
 	const [resHeaders, setResHeaders] = useState({});
 	const [resStatus, setResStatus] = useState('');
 	const [resBody, setResBody] = useState('');
@@ -64,6 +65,7 @@ function App() {
 			method: method,
 			params: kvToObjects(),
 			headers: headersToObjects(),
+			data: JSON.parse(reqBody),
 		};
 		axios(x)
 			.catch((e) => e)
@@ -254,9 +256,26 @@ function App() {
 						</Button>
 					</div>
 				)}
-				{tab === 2 && <div className="tab-panel">JSON</div>}
+				{tab === 2 && (
+					<div className="tab-panel">
+						<CodeMirror
+							value={reqBody}
+							options={{
+								mode: 'javascript',
+								theme: 'material',
+								lineNumbers: true,
+								tabSize: 8,
+							}}
+							onBeforeChange={(editor, data, value) => {
+								setReqBody(value);
+							}}
+							onChange={(editor, data, value) => {
+								setReqBody(value);
+							}}
+						/>
+					</div>
+				)}
 			</div>
-
 			{resExists && (
 				<>
 					<div className="response">
