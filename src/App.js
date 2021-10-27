@@ -61,7 +61,7 @@ function App() {
 		e.preventDefault();
 
 		var x =
-			reqMethod === 'GET'
+			method === 'GET'
 				? {
 						url: reqUrl,
 						method: method,
