@@ -11,6 +11,10 @@ import {
 	Tabs,
 	Tab,
 } from '@mui/material';
+import { Controlled as CodeMirror } from 'react-codemirror2';
+require('codemirror/lib/codemirror.css');
+require('codemirror/theme/material.css');
+require('codemirror/mode/javascript/javascript');
 
 function App() {
 	const [method, setMethod] = useState('GET');
@@ -31,6 +35,7 @@ function App() {
 	]);
 	const [resHeaders, setResHeaders] = useState({});
 	const [resStatus, setResStatus] = useState('');
+	const [resBody, setResBody] = useState('');
 	const [resTime, setResTime] = useState('');
 	const [resSize, setResSize] = useState('');
 	const [resExists, setResExists] = useState(false);
@@ -65,6 +70,7 @@ function App() {
 			.then((res) => {
 				console.log(res);
 				setResStatus(res.status);
+				setResBody(res.data);
 				setResTime(res.customData?.time);
 				setResSize(
 					prettyBytes(
@@ -130,6 +136,7 @@ function App() {
 
 	return (
 		<div className="app">
+			<h1>Axias</h1>
 			<form className="req-form" onSubmit={handleReqSubmit}>
 				<FormControl>
 					<InputLabel>Method</InputLabel>
@@ -266,50 +273,15 @@ function App() {
 							<Tab label="Headers" />
 						</Tabs>
 						{resTab === 0 && (
-							<div className="tab-panel">
-								{keyValues.map((pair, i) => {
-									return (
-										<div className="req-form">
-											<TextField
-												variant="outlined"
-												placeholder="Key"
-												name="key"
-												value={pair.key}
-												onChange={(e) =>
-													handleInputChange(e, i)
-												}
-												autoComplete="off"
-											></TextField>
-											<TextField
-												variant="outlined"
-												placeholder="Value"
-												name="value"
-												value={pair.value}
-												onChange={(e) =>
-													handleInputChange(e, i)
-												}
-												autoComplete="off"
-											></TextField>
-											<Button
-												variant="outlined"
-												className="delete"
-												onClick={() =>
-													removeKeyValue(i)
-												}
-											>
-												Remove
-											</Button>
-										</div>
-									);
-								})}
-								<Button
-									variant="outlined"
-									className="add"
-									onClick={addKeyValue}
-								>
-									Add
-								</Button>
-							</div>
+							<CodeMirror
+								value={JSON.stringify(resBody, null, 2)}
+								options={{
+									mode: 'javascript',
+									theme: 'material',
+									lineNumbers: true,
+									tabSize: 8,
+								}}
+							/>
 						)}
 						{resTab === 1 && (
 							<div className="tab-panel res-headers">

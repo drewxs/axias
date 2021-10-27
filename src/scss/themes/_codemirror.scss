@@ -1,0 +1,12 @@
+@use '../abstract/functions' as *;
+
+.CodeMirror-code {
+	margin-top: 0.5em;
+	margin-left: 2em;
+
+	.CodeMirror-gutter-wrapper {
+		.CodeMirror-linenumber {
+			margin-left: -3em;
+		}
+	}
+}

@@ -3,6 +3,7 @@
 #method-select {
 	width: 6em;
 }
+
 .MuiTextField-root {
 	flex-grow: 1;
 }
@@ -30,7 +31,7 @@
 	max-height: 200px;
 }
 .response {
-	margin: 2em 0 0 1em;
+	margin: 2em 0 0.5em 1em;
 
 	.stats {
 		display: flex;
@@ -50,4 +51,8 @@
 		grid-template-columns: 0.5fr 1fr;
 		gap: 1rem 0;
 	}
+}
+
+h1 {
+	margin-bottom: 0.5em;
 }

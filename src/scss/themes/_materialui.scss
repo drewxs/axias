@@ -5,6 +5,12 @@
 .MuiInputBase-root {
 	color: clr(neutral, 300) !important;
 }
+.MuiOutlinedInput-root {
+	input:-webkit-autofill {
+		-webkit-text-fill-color: clr(primary, 300) !important;
+		box-shadow: 0 0 0 1000px #74515100 inset !important;
+	}
+}
 .MuiInput-underline::after {
 	border-bottom-color: clr(primary, 500);
 }
