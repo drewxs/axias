@@ -60,13 +60,21 @@ function App() {
 	const handleReqSubmit = (e) => {
 		e.preventDefault();
 
-		var x = {
-			url: reqUrl,
-			method: method,
-			params: kvToObjects(),
-			headers: headersToObjects(),
-			data: JSON.parse(reqBody),
-		};
+		var x =
+			reqMethod === 'GET'
+				? {
+						url: reqUrl,
+						method: method,
+						params: kvToObjects(),
+						headers: headersToObjects(),
+				  }
+				: {
+						url: reqUrl,
+						method: method,
+						params: kvToObjects(),
+						headers: headersToObjects(),
+						data: JSON.parse(reqBody),
+				  };
 		axios(x)
 			.catch((e) => e)
 			.then((res) => {
