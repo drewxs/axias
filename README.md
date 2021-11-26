@@ -19,7 +19,7 @@ git clone https://github.com/kito0/axias.git
 Install dependencies
 
 ```sh
-npm install
+npm i
 ```
 
 Start dev client:
