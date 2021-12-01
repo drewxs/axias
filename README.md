@@ -6,7 +6,13 @@ A platform for API development.
 ### Usage
 
 Simply visit [Axias](https://axias.vercel.app/).
-<br><br>
+<br>
+For an executable, run
+
+```sh
+electron-forge package
+```
+<br>
 
 ### Development
 
